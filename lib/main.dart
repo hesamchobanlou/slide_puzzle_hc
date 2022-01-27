@@ -33,23 +33,42 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Grid myGrid = Grid(
+    rows: 4,
+    columns: 4,
+    tileDim: 50, // size x size
+    tilePadding: 2,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+    return FutureBuilder<bool>(
+      future: myGrid.initWithImage(
+        puzzleImage: 'assets/images/dog.jpg',
+        emptyBlockImage: 'assets/images/empty_block.png',
       ),
-      body: ChangeNotifierProvider(
-        create: (context) => Grid(
-          rows: 2,
-          columns: 2,
-          tileDim: 50, // 50 x 50
-          tilePadding: 5,
-        ),
-        child: const Center(
-          child: AnimatedGrid(),
-        ),
-      ),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(widget.title),
+            ),
+            body: ChangeNotifierProvider(
+              create: (context) => myGrid,
+              child: const Center(
+                child: AnimatedGrid(),
+              ),
+            ),
+          );
+        }
+
+        return Container();
+      },
     );
   }
 }

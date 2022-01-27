@@ -18,26 +18,26 @@ class AnimatedGridItem extends AnimatedWidget {
     final animation = listenable as Animation<Offset>;
 
     print(
-        'Animated Grid Item Type:${gridItem.type}, X:${gridItem.dx}, Y:${gridItem.dy}');
+        'Animated Grid Item Type:${gridItem.gridItemType}, X:${gridItem.dx}, Y:${gridItem.dy}');
 
     return Transform.translate(
       offset: animation.value,
       child: GestureDetector(
         onTap: () {
           print(
-              'tapped on Grid Item - X:${gridItem.dx} Y:${gridItem.dy} Type:${gridItem.type}');
+              'tapped on Grid Item - X:${gridItem.dx} Y:${gridItem.dy} Type:${gridItem.gridItemType}');
 
           Provider.of<Grid>(context, listen: false).swapToEmptyTile(gridItem);
         },
-        child: Container(
-          child: SizedBox(
-            child: Text(gridItem.type),
-            width: gridItem.width,
-            height: gridItem.height,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.black),
+        child: SizedBox(
+          width: gridItem.width,
+          height: gridItem.height,
+          child: Container(
+            child: Image(image: gridItem.gridImage.image),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(3),
+              border: Border.all(color: Colors.black),
+            ),
           ),
         ),
       ),

@@ -1,0 +1,1 @@
+enum GridItemType { emptyGridItem, filledGridItem }

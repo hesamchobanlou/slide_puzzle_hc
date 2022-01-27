@@ -61,18 +61,11 @@ class _AnimatedGridState extends State<AnimatedGrid>
   }
 
   Widget _buildGridItem(GridItem gridItem) {
-    double dx = gridItem.dx;
-    double dy = gridItem.dy;
-
-    Offset offset = Offset(dx, dy);
+    Offset offset = Offset(gridItem.dx, gridItem.dy);
 
     // calculate begin and end offset?
-    Offset beginOffset;
-    Offset endOffset;
-
-    // TODO: how do we determine the change?
-    beginOffset = offset;
-    endOffset = offset;
+    Offset beginOffset = offset;
+    Offset endOffset = offset;
 
     // offset tween
     _animation =
