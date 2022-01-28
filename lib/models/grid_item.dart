@@ -6,6 +6,9 @@ class GridItem {
   double dx;
   double dy;
 
+  double? moveToDx;
+  double? moveToDy;
+
   double height;
   double width;
 
@@ -18,9 +21,18 @@ class GridItem {
       required this.width,
       required this.dx,
       required this.dy,
+      this.moveToDx,
+      this.moveToDy,
       required this.gridItemType,
       required this.gridImage});
 
-  void setX(double dx) => {this.dx = dx};
-  void setY(double dy) => {this.dy = dy};
+  void updatePosToMovementAndClear() {
+    if (moveToDx != null && moveToDy != null) {
+      dx = moveToDx!;
+      dy = moveToDy!;
+
+      moveToDx = null;
+      moveToDy = null;
+    }
+  }
 }

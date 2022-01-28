@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'package:slide_puzzle_hc/models/grid.dart';
 import 'package:slide_puzzle_hc/models/grid_item.dart';
 
 class AnimatedGridItem extends AnimatedWidget {
   final GridItem gridItem;
 
-  const AnimatedGridItem({
-    Key? key,
-    required this.gridItem,
-    required Animation<Offset> animation,
-  }) : super(key: key, listenable: animation);
+  final VoidCallback onItemTapped;
+
+  const AnimatedGridItem(
+      {Key? key,
+      required this.gridItem,
+      required Animation<Offset> animation,
+      required this.onItemTapped})
+      : super(key: key, listenable: animation);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class AnimatedGridItem extends AnimatedWidget {
           print(
               'tapped on Grid Item - X:${gridItem.dx} Y:${gridItem.dy} Type:${gridItem.gridItemType}');
 
-          Provider.of<Grid>(context, listen: false).swapToEmptyTile(gridItem);
+          onItemTapped();
         },
         child: SizedBox(
           width: gridItem.width,

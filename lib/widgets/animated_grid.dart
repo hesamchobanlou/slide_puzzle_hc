@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:slide_puzzle_hc/models/grid.dart';
 import 'package:slide_puzzle_hc/models/grid_item.dart';
+import 'package:slide_puzzle_hc/models/grid_item_type.dart';
 import 'package:slide_puzzle_hc/widgets/animated_grid_item.dart';
 
 class AnimatedGrid extends StatefulWidget {
@@ -42,30 +43,38 @@ class _AnimatedGridState extends State<AnimatedGrid>
           height: grid.height(),
           width: grid.width(),
           child: Stack(
-            children: _buildGridItems(grid.tiles),
+            children:
+                _buildGridItems(grid.gridItems, grid.height(), grid.width()),
           ),
         );
       },
     );
   }
 
-  List<Widget> _buildGridItems(List<GridItem> gridItems) {
+  List<Widget> _buildGridItems(
+      List<GridItem> gridItems, double gridHeight, double gridWidth) {
     List<Widget> builtGridItemWidget = [];
     for (var i = 0; i < gridItems.length; i++) {
       GridItem curGridItem = gridItems[i];
 
-      builtGridItemWidget.add(_buildGridItem(curGridItem));
+      builtGridItemWidget
+          .add(_buildGridItem(curGridItem, gridHeight, gridWidth));
     }
 
     return builtGridItemWidget;
   }
 
-  Widget _buildGridItem(GridItem gridItem) {
+  Widget _buildGridItem(
+      GridItem gridItem, double gridHeight, double gridWidth) {
     Offset offset = Offset(gridItem.dx, gridItem.dy);
 
     // calculate begin and end offset?
     Offset beginOffset = offset;
     Offset endOffset = offset;
+
+    if (gridItem.moveToDx != null && gridItem.moveToDy != null) {
+      endOffset = Offset(gridItem.moveToDx!, gridItem.moveToDy!);
+    }
 
     // offset tween
     _animation =
@@ -77,6 +86,22 @@ class _AnimatedGridState extends State<AnimatedGrid>
     return AnimatedGridItem(
       gridItem: gridItem,
       animation: _animation,
+      onItemTapped: () {
+        print('onItemTapped');
+
+        if (!_controller.isAnimating &&
+            gridItem.gridItemType != GridItemType.emptyGridItem) {
+          Provider.of<Grid>(context, listen: false).swapToEmptyTile(gridItem);
+
+          _controller.forward().whenCompleteOrCancel(() {
+            Provider.of<Grid>(context, listen: false)
+                .clearGridMovement(gridItem);
+
+            _controller.stop(canceled: false);
+            _controller.value = 0;
+          });
+        }
+      },
     );
   }
 }
