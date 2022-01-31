@@ -18,6 +18,8 @@ class AnimatedGridItem extends AnimatedWidget {
   Widget build(BuildContext context) {
     final animation = listenable as Animation<Offset>;
 
+    double _opacity = 1.0;
+
     print('Animated GridItem - ' + gridItem.toString());
 
     return Transform.translate(
@@ -31,11 +33,28 @@ class AnimatedGridItem extends AnimatedWidget {
         child: SizedBox(
           width: gridItem.width,
           height: gridItem.height,
-          child: Container(
-            child: Image(image: gridItem.gridImage.image),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(3),
-              border: Border.all(color: Colors.black),
+          child: Opacity(
+            opacity: _opacity,
+            child: Container(
+              child: Image(
+                image: gridItem.gridImage.image,
+                fit: BoxFit.fill,
+              ),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 2),
+                  )
+                ],
+                borderRadius: BorderRadius.circular(3),
+                border: Border.all(
+                  width: 1.5,
+                  color: Colors.grey.shade600,
+                ),
+              ),
             ),
           ),
         ),

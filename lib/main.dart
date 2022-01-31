@@ -36,8 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Grid myGrid = Grid(
     rows: 4,
     columns: 4,
-    gridItemDim: 50, // size x size
-    gridItemPadding: 2,
+    gridItemDim: 60, // size x size
+    gridItemPadding: 5,
   );
 
   @override

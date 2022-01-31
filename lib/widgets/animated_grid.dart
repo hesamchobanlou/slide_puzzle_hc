@@ -22,7 +22,7 @@ class _AnimatedGridState extends State<AnimatedGrid>
   void initState() {
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 300),
     );
 
     super.initState();
