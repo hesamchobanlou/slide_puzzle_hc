@@ -165,35 +165,51 @@ class Grid extends ChangeNotifier {
     print('Udpated GridItem - ' + emptyGridItem.toString());
   }
 
-  void swapToEmptyTile(GridItem tile) {
-    if (_canMoveTile(tile)) {
+  void swapToEmptyTile(GridItem gridItem) {
+    if (_canMoveGridItem(gridItem)) {
       GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
 
       print('Swap - ' +
-          tile.toString() +
+          gridItem.toString() +
           ' - with - ' +
           emptyGridItem.toString());
 
       double tempDx = emptyGridItem.dx;
       double tempDy = emptyGridItem.dy;
+      int tempRow = emptyGridItem.row;
+      int tempCol = emptyGridItem.col;
 
-      emptyGridItem.moveToDx = tile.dx;
-      emptyGridItem.moveToDy = tile.dy;
+      emptyGridItem.moveToDx = gridItem.dx;
+      emptyGridItem.moveToDy = gridItem.dy;
+      emptyGridItem.row = gridItem.row;
+      emptyGridItem.col = gridItem.col;
 
-      tile.moveToDx = tempDx;
-      tile.moveToDy = tempDy;
+      gridItem.moveToDx = tempDx;
+      gridItem.moveToDy = tempDy;
+      gridItem.row = tempRow;
+      gridItem.col = tempCol;
     }
 
     notifyListeners();
   }
 
-  bool _canMoveTile(GridItem tileToMove) {
-    if (tileToMove.gridItemType == GridItemType.filledGridItem) {
+  bool _canMoveGridItem(GridItem gridItemToMove) {
+    if (gridItemToMove.gridItemType == GridItemType.filledGridItem) {
       GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
 
-      // TODO:
+      if (gridItemToMove.col == emptyGridItem.col) {
+        if ((gridItemToMove.row - 1 == emptyGridItem.row) ||
+            gridItemToMove.row + 1 == emptyGridItem.row) {
+          return true;
+        }
+      } else if (gridItemToMove.row == emptyGridItem.row) {
+        if ((gridItemToMove.col - 1 == emptyGridItem.col) ||
+            (gridItemToMove.col + 1 == emptyGridItem.col)) {
+          return true;
+        }
+      }
 
-      return true;
+      return false;
     }
 
     return false;
