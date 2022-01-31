@@ -18,15 +18,13 @@ class AnimatedGridItem extends AnimatedWidget {
   Widget build(BuildContext context) {
     final animation = listenable as Animation<Offset>;
 
-    print(
-        'Animated Grid Item Type:${gridItem.gridItemType}, X:${gridItem.dx}, Y:${gridItem.dy}');
+    print('Animated GridItem - ' + gridItem.toString());
 
     return Transform.translate(
       offset: animation.value,
       child: GestureDetector(
         onTap: () {
-          print(
-              'tapped on Grid Item - X:${gridItem.dx} Y:${gridItem.dy} Type:${gridItem.gridItemType}');
+          print('Tapped on GridItem - ' + gridItem.toString());
 
           onItemTapped();
         },

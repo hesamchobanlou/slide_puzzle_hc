@@ -115,6 +115,8 @@ class Grid extends ChangeNotifier {
 
       gridItems.add(
         GridItem(
+            row: row,
+            col: col,
             height: gridItemDim,
             width: gridItemDim,
             dx: offset.dx,
@@ -160,16 +162,17 @@ class Grid extends ChangeNotifier {
     // empty grid item is never clicked, so we do this here
     emptyGridItem.updatePosToMovementAndClear();
 
-    print(
-        'udpated grid item type:${emptyGridItem.gridItemType} dx:${emptyGridItem.dx} dy:${emptyGridItem.dy} moveToDx:${emptyGridItem.moveToDx} moveToDy:${emptyGridItem.moveToDy}');
+    print('Udpated GridItem - ' + emptyGridItem.toString());
   }
 
   void swapToEmptyTile(GridItem tile) {
-    if (tile.gridItemType == GridItemType.filledGridItem) {
+    if (_canMoveTile(tile)) {
       GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
 
-      print(
-          'swap x: ${tile.dx} y:${tile.dy} type:${tile.gridItemType} with x:${emptyGridItem.dx} y:${emptyGridItem.dy} type:${emptyGridItem.gridItemType}');
+      print('Swap - ' +
+          tile.toString() +
+          ' - with - ' +
+          emptyGridItem.toString());
 
       double tempDx = emptyGridItem.dx;
       double tempDy = emptyGridItem.dy;
@@ -182,5 +185,17 @@ class Grid extends ChangeNotifier {
     }
 
     notifyListeners();
+  }
+
+  bool _canMoveTile(GridItem tileToMove) {
+    if (tileToMove.gridItemType == GridItemType.filledGridItem) {
+      GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
+
+      // TODO:
+
+      return true;
+    }
+
+    return false;
   }
 }
