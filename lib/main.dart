@@ -34,9 +34,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Grid myGrid = Grid(
-    rows: 4,
-    columns: 4,
-    gridItemDim: 60, // size x size
+    rows: 5,
+    columns: 5,
+    gridItemDim: 100, // size x size
     gridItemPadding: 5,
   );
 
@@ -49,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
       future: myGrid.initWithImage(
-        puzzleImage: 'assets/images/dog.jpg',
+        puzzleImage: 'assets/images/puzzle_image.jpg',
         emptyBlockImage: 'assets/images/empty_block.png',
       ),
       builder: (context, snapshot) {
