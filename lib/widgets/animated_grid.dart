@@ -18,8 +18,16 @@ class _AnimatedGridState extends State<AnimatedGrid>
   late AnimationController _controller;
   late Animation<Offset> _animation;
 
+  late bool _gameStarted;
+
+  late String _gameButtonText;
+
   @override
   void initState() {
+    _gameStarted = false;
+
+    _gameButtonText = 'Start Game';
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -39,12 +47,56 @@ class _AnimatedGridState extends State<AnimatedGrid>
   Widget build(BuildContext context) {
     return Consumer<Grid>(
       builder: (context, grid, child) {
-        return SizedBox(
-          height: grid.height(),
-          width: grid.width(),
-          child: Stack(
-            children:
-                _buildGridItems(grid.gridItems, grid.height(), grid.width()),
+        return Container(
+          padding: const EdgeInsets.only(top: 35),
+          child: Column(
+            children: [
+              // TODO:
+              Text(
+                'Timer: 00:00   |   Moves: ${grid.playerMoves}',
+                style: const TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+              const SizedBox(height: 25),
+              SizedBox(
+                height: grid.height(),
+                width: grid.width(),
+                child: Stack(
+                  children: _buildGridItems(
+                      grid.gridItems, grid.height(), grid.width()),
+                ),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                  primary: Colors.green.shade400,
+                ),
+                onPressed: () {
+                  setState(
+                    () {
+                      if (_gameStarted) {
+                        _gameStarted = false;
+
+                        _gameButtonText = 'Start Game';
+
+                        Provider.of<Grid>(context, listen: false).resetGrid();
+                      } else {
+                        _gameStarted = true;
+
+                        _gameButtonText = 'Reset';
+                      }
+                    },
+                  );
+                },
+                child: Text(
+                  _gameButtonText,
+                  style: const TextStyle(fontSize: 15),
+                ),
+              ),
+            ],
           ),
         );
       },
@@ -87,9 +139,10 @@ class _AnimatedGridState extends State<AnimatedGrid>
       gridItem: gridItem,
       animation: _animation,
       onItemTapped: () {
-        print('onItemTapped');
+        print('onItemTapped - ' + gridItem.toString());
 
         if (!_controller.isAnimating &&
+            _gameStarted &&
             gridItem.gridItemType != GridItemType.emptyGridItem) {
           Provider.of<Grid>(context, listen: false).swapToEmptyTile(gridItem);
 

@@ -6,8 +6,14 @@ class GridItem {
   int row;
   int col;
 
+  final int origRow;
+  final int origCol;
+
   double dx;
   double dy;
+
+  final double origDx;
+  final double origDy;
 
   double? moveToDx;
   double? moveToDy;
@@ -19,17 +25,32 @@ class GridItem {
 
   GridItemType gridItemType;
 
-  GridItem(
-      {required this.height,
-      required this.width,
-      required this.row,
-      required this.col,
-      required this.dx,
-      required this.dy,
-      this.moveToDx,
-      this.moveToDy,
-      required this.gridItemType,
-      required this.gridImage});
+  GridItem({
+    required this.height,
+    required this.width,
+    required this.row,
+    required this.col,
+    required this.dx,
+    required this.dy,
+    this.moveToDx,
+    this.moveToDy,
+    required this.gridItemType,
+    required this.gridImage,
+  })  : origCol = col,
+        origRow = row,
+        origDx = dx,
+        origDy = dy;
+
+  void reset() {
+    row = origRow;
+    col = origCol;
+
+    dx = origDx;
+    dy = origDy;
+
+    moveToDx = null;
+    moveToDy = null;
+  }
 
   void updatePosToMovementAndClear() {
     if (moveToDx != null && moveToDy != null) {
@@ -43,6 +64,6 @@ class GridItem {
 
   @override
   String toString() {
-    return 'type:$gridItemType row:$row, col:$col dx:$dx dy:$dy moveToDx:$moveToDx moveToDy:$moveToDy';
+    return 'type:$gridItemType row:$row, col:$col origRow:$origRow origCol:$origCol dx:$dx dy:$dy origDx:$origDx origDy:$origDy moveToDx:$moveToDx moveToDy:$moveToDy';
   }
 }

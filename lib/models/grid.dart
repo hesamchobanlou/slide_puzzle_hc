@@ -19,8 +19,9 @@ class Grid extends ChangeNotifier {
   late List<int> _puzzleImage;
 
   late Image _emptyGridItemImage;
-
   late int _emptyGridItemIdx;
+
+  late int playerMoves;
 
   Grid({
     required this.rows,
@@ -29,6 +30,8 @@ class Grid extends ChangeNotifier {
     required this.gridItemPadding,
   }) {
     gridItems = [];
+
+    playerMoves = 0;
   }
 
   Future<bool> initWithImage(
@@ -146,6 +149,28 @@ class Grid extends ChangeNotifier {
     return Offset(dx, dy);
   }
 
+  bool _canMoveGridItem(GridItem gridItemToMove) {
+    if (gridItemToMove.gridItemType == GridItemType.filledGridItem) {
+      GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
+
+      if (gridItemToMove.col == emptyGridItem.col) {
+        if ((gridItemToMove.row - 1 == emptyGridItem.row) ||
+            gridItemToMove.row + 1 == emptyGridItem.row) {
+          return true;
+        }
+      } else if (gridItemToMove.row == emptyGridItem.row) {
+        if ((gridItemToMove.col - 1 == emptyGridItem.col) ||
+            (gridItemToMove.col + 1 == emptyGridItem.col)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    return false;
+  }
+
   double height() {
     return (rows * (gridItemDim + gridItemPadding));
   }
@@ -154,18 +179,19 @@ class Grid extends ChangeNotifier {
     return (columns * (gridItemDim + gridItemPadding));
   }
 
-  void clearGridMovement(GridItem gridItem) {
-    GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
+  void resetGrid() {
+    for (GridItem item in gridItems) {
+      item.reset();
+    }
 
-    gridItem.updatePosToMovementAndClear();
-
-    // empty grid item is never clicked, so we do this here
-    emptyGridItem.updatePosToMovementAndClear();
-
-    print('Udpated GridItem - ' + emptyGridItem.toString());
+    playerMoves = 0;
   }
 
-  void swapToEmptyTile(GridItem gridItem) {
+  void shuffleGrid() {
+    // TODO:
+  }
+
+  void swapWithGridItem(GridItem gridItem) {
     if (_canMoveGridItem(gridItem)) {
       GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
 
@@ -188,30 +214,21 @@ class Grid extends ChangeNotifier {
       gridItem.moveToDy = tempDy;
       gridItem.row = tempRow;
       gridItem.col = tempCol;
+
+      playerMoves += 1;
     }
 
     notifyListeners();
   }
 
-  bool _canMoveGridItem(GridItem gridItemToMove) {
-    if (gridItemToMove.gridItemType == GridItemType.filledGridItem) {
-      GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
+  void clearGridMovements(GridItem gridItem) {
+    GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
 
-      if (gridItemToMove.col == emptyGridItem.col) {
-        if ((gridItemToMove.row - 1 == emptyGridItem.row) ||
-            gridItemToMove.row + 1 == emptyGridItem.row) {
-          return true;
-        }
-      } else if (gridItemToMove.row == emptyGridItem.row) {
-        if ((gridItemToMove.col - 1 == emptyGridItem.col) ||
-            (gridItemToMove.col + 1 == emptyGridItem.col)) {
-          return true;
-        }
-      }
+    gridItem.updatePosToMovementAndClear();
 
-      return false;
-    }
+    // empty grid item is never clicked, so we do this here
+    emptyGridItem.updatePosToMovementAndClear();
 
-    return false;
+    print('Updated GridItem - ' + emptyGridItem.toString());
   }
 }
