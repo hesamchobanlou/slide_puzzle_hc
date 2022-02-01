@@ -51,7 +51,7 @@ class _AnimatedGridState extends State<AnimatedGrid>
           padding: const EdgeInsets.only(top: 35),
           child: Column(
             children: [
-              // TODO:
+              // TODO: timer
               Text(
                 'Timer: 00:00   |   Moves: ${grid.playerMoves}',
                 style: const TextStyle(
@@ -86,7 +86,17 @@ class _AnimatedGridState extends State<AnimatedGrid>
                       } else {
                         _gameStarted = true;
 
-                        _gameButtonText = 'Reset';
+                        _gameButtonText = 'Reset Game';
+
+                        Provider.of<Grid>(context, listen: false).shuffleGrid();
+
+                        _controller.forward().whenCompleteOrCancel(() {
+                          Provider.of<Grid>(context, listen: false)
+                              .clearAllGridMovements();
+
+                          _controller.stop(canceled: false);
+                          _controller.value = 0;
+                        });
                       }
                     },
                   );
@@ -144,11 +154,11 @@ class _AnimatedGridState extends State<AnimatedGrid>
         if (!_controller.isAnimating &&
             _gameStarted &&
             gridItem.gridItemType != GridItemType.emptyGridItem) {
-          Provider.of<Grid>(context, listen: false).swapToEmptyTile(gridItem);
+          Provider.of<Grid>(context, listen: false).swapWithGridItem(gridItem);
 
           _controller.forward().whenCompleteOrCancel(() {
             Provider.of<Grid>(context, listen: false)
-                .clearGridMovement(gridItem);
+                .clearGridMovements(gridItem);
 
             _controller.stop(canceled: false);
             _controller.value = 0;

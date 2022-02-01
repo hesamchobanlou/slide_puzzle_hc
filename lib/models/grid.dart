@@ -87,27 +87,10 @@ class Grid extends ChangeNotifier {
 
   void _buildGridItems(List<Image> images) {
     for (int i = 0; i < images.length; i++) {
-      double rowPadding = 0;
-      double colPadding = 0;
-
       int row = _calcRow(i);
       int col = _calcCol(i);
 
-      if (row > 0) {
-        rowPadding = gridItemPadding;
-      }
-
-      if (col > 0) {
-        colPadding = gridItemPadding;
-      }
-
-      Offset offset = _calcOffset(
-        row,
-        col,
-        gridItemDim,
-        rowPadding,
-        colPadding,
-      );
+      Offset offset = _calcOffset(row, col, gridItemDim);
 
       GridItemType gridItemType;
       if (i == (images.length - 1)) {
@@ -138,8 +121,19 @@ class Grid extends ChangeNotifier {
     return idx % columns;
   }
 
-  Offset _calcOffset(int row, int col, double dim,
-      [double rowPadding = 0, double colPadding = 0]) {
+  Offset _calcOffset(int row, int col, double dim) {
+    // padding
+    double rowPadding = 0;
+    double colPadding = 0;
+
+    if (row > 0) {
+      rowPadding = gridItemPadding;
+    }
+
+    if (col > 0) {
+      colPadding = gridItemPadding;
+    }
+
     // col determines x axis
     double dx = (col * (dim + colPadding));
 
@@ -188,7 +182,26 @@ class Grid extends ChangeNotifier {
   }
 
   void shuffleGrid() {
-    // TODO:
+    gridItems.shuffle();
+
+    // re-calc position
+    for (int i = 0; i < gridItems.length; i++) {
+      int row = _calcRow(i);
+      int col = _calcCol(i);
+
+      Offset offset = _calcOffset(row, col, gridItemDim);
+
+      gridItems[i].row = row;
+      gridItems[i].col = col;
+
+      gridItems[i].moveToDx = offset.dx;
+      gridItems[i].moveToDy = offset.dy;
+
+      // update empty grid item index
+      if (gridItems[i].gridItemType == GridItemType.emptyGridItem) {
+        _emptyGridItemIdx = i;
+      }
+    }
   }
 
   void swapWithGridItem(GridItem gridItem) {
@@ -202,16 +215,19 @@ class Grid extends ChangeNotifier {
 
       double tempDx = emptyGridItem.dx;
       double tempDy = emptyGridItem.dy;
+
       int tempRow = emptyGridItem.row;
       int tempCol = emptyGridItem.col;
 
       emptyGridItem.moveToDx = gridItem.dx;
       emptyGridItem.moveToDy = gridItem.dy;
+
       emptyGridItem.row = gridItem.row;
       emptyGridItem.col = gridItem.col;
 
       gridItem.moveToDx = tempDx;
       gridItem.moveToDy = tempDy;
+
       gridItem.row = tempRow;
       gridItem.col = tempCol;
 
@@ -230,5 +246,11 @@ class Grid extends ChangeNotifier {
     emptyGridItem.updatePosToMovementAndClear();
 
     print('Updated GridItem - ' + emptyGridItem.toString());
+  }
+
+  void clearAllGridMovements() {
+    for (GridItem item in gridItems) {
+      clearGridMovements(item);
+    }
   }
 }

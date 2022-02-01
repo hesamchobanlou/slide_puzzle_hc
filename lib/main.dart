@@ -15,24 +15,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'Slide Puzzle',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const SlidePuzzle(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-  final String title;
-
+class SlidePuzzle extends StatefulWidget {
+  const SlidePuzzle({Key? key}) : super(key: key);
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<SlidePuzzle> createState() => _SlidePuzzleState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _SlidePuzzleState extends State<SlidePuzzle> {
   Grid myGrid = Grid(
     rows: 5,
     columns: 5,
@@ -55,9 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
-            appBar: AppBar(
-              title: Text(widget.title),
-            ),
             body: ChangeNotifierProvider(
               create: (context) => myGrid,
               child: const Center(
@@ -65,9 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
           );
+        } else {
+          return const Scaffold(
+            body: Center(
+              child: Text('Loading...'),
+            ),
+          );
         }
-
-        return Container();
       },
     );
   }
