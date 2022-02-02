@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,11 +24,16 @@ class _AnimatedGridState extends State<AnimatedGrid>
 
   late String _gameButtonText;
 
+  late Timer _gameTimer;
+  late int _secondsElapsed;
+
   @override
   void initState() {
     _gameStarted = false;
 
     _gameButtonText = 'Start Game';
+
+    _secondsElapsed = 0;
 
     _controller = AnimationController(
       vsync: this,
@@ -51,9 +58,8 @@ class _AnimatedGridState extends State<AnimatedGrid>
           padding: const EdgeInsets.only(top: 35),
           child: Column(
             children: [
-              // TODO: timer
               Text(
-                'Timer: 00:00   |   Moves: ${grid.playerMoves}',
+                'Timer: ${_gameTimerText()}   |   Moves: ${grid.playerMoves}',
                 style: const TextStyle(
                   fontSize: 20,
                 ),
@@ -83,6 +89,9 @@ class _AnimatedGridState extends State<AnimatedGrid>
                         _gameButtonText = 'Start Game';
 
                         Provider.of<Grid>(context, listen: false).resetGrid();
+
+                        _gameTimer.cancel();
+                        _secondsElapsed = 0;
                       } else {
                         _gameStarted = true;
 
@@ -90,12 +99,21 @@ class _AnimatedGridState extends State<AnimatedGrid>
 
                         Provider.of<Grid>(context, listen: false).shuffleGrid();
 
-                        _controller.forward().whenCompleteOrCancel(() {
-                          Provider.of<Grid>(context, listen: false)
-                              .clearAllGridMovements();
+                        _controller.forward().whenCompleteOrCancel(
+                          () {
+                            Provider.of<Grid>(context, listen: false)
+                                .clearAllGridMovements();
 
-                          _controller.stop(canceled: false);
-                          _controller.value = 0;
+                            _controller.stop(canceled: false);
+                            _controller.value = 0;
+                          },
+                        );
+
+                        _gameTimer =
+                            Timer.periodic(const Duration(seconds: 1), (timer) {
+                          setState(() {
+                            _secondsElapsed++;
+                          });
                         });
                       }
                     },
@@ -166,5 +184,17 @@ class _AnimatedGridState extends State<AnimatedGrid>
         }
       },
     );
+  }
+
+  String _gameTimerText() {
+    Duration gameDuration = Duration(seconds: _secondsElapsed);
+
+    String minutes =
+        gameDuration.inMinutes.remainder(60).toString().padLeft(2, '0');
+
+    String seconds =
+        gameDuration.inSeconds.remainder(60).toString().padLeft(2, '0');
+
+    return '$minutes:$seconds';
   }
 }
