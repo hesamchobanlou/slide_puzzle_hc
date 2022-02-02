@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:slide_puzzle_hc/models/grid_item.dart';
@@ -20,13 +21,17 @@ class AnimatedGridItem extends AnimatedWidget {
 
     double _opacity = 1.0;
 
-    print('Animated GridItem - ' + gridItem.toString());
+    if (kDebugMode) {
+      print('Animated GridItem - ' + gridItem.toString());
+    }
 
     return Transform.translate(
       offset: animation.value,
       child: GestureDetector(
         onTap: () {
-          print('Tapped on GridItem - ' + gridItem.toString());
+          if (kDebugMode) {
+            print('Tapped on GridItem - ' + gridItem.toString());
+          }
 
           onItemTapped();
         },

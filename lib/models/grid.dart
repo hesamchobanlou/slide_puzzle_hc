@@ -1,4 +1,6 @@
 import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -208,10 +210,12 @@ class Grid extends ChangeNotifier {
     if (_canMoveGridItem(gridItem)) {
       GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
 
-      print('Swap - ' +
-          gridItem.toString() +
-          ' - with - ' +
-          emptyGridItem.toString());
+      if (kDebugMode) {
+        print('Swap - ' +
+            gridItem.toString() +
+            ' - with - ' +
+            emptyGridItem.toString());
+      }
 
       double tempDx = emptyGridItem.dx;
       double tempDy = emptyGridItem.dy;
@@ -245,7 +249,9 @@ class Grid extends ChangeNotifier {
     // empty grid item is never clicked, so we do this here
     emptyGridItem.updatePosToMovementAndClear();
 
-    print('Updated GridItem - ' + emptyGridItem.toString());
+    if (kDebugMode) {
+      print('Updated GridItem - ' + emptyGridItem.toString());
+    }
   }
 
   void clearAllGridMovements() {

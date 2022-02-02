@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -167,7 +168,9 @@ class _AnimatedGridState extends State<AnimatedGrid>
       gridItem: gridItem,
       animation: _animation,
       onItemTapped: () {
-        print('onItemTapped - ' + gridItem.toString());
+        if (kDebugMode) {
+          print('onItemTapped - ' + gridItem.toString());
+        }
 
         if (!_controller.isAnimating &&
             _gameStarted &&
