@@ -55,12 +55,18 @@ class _AnimatedGridState extends State<AnimatedGrid>
   Widget build(BuildContext context) {
     return Consumer<Grid>(
       builder: (context, grid, child) {
+        if (grid.isCompleted()) {
+          _gameButtonText = 'Play Again';
+
+          _gameTimer.cancel();
+        }
+
         return Container(
           padding: const EdgeInsets.only(top: 35),
           child: Column(
             children: [
               Text(
-                'Timer: ${_gameTimerText()}   |   Moves: ${grid.playerMoves}',
+                'Timer: ${_gameTimerText()}   |   Moves: ${grid.playerMoves()}',
                 style: const TextStyle(
                   fontSize: 20,
                 ),

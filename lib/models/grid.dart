@@ -23,7 +23,9 @@ class Grid extends ChangeNotifier {
   late Image _emptyGridItemImage;
   late int _emptyGridItemIdx;
 
-  late int playerMoves;
+  late int _playerMoves;
+
+  late bool _puzzleSolved;
 
   Grid({
     required this.rows,
@@ -33,7 +35,8 @@ class Grid extends ChangeNotifier {
   }) {
     gridItems = [];
 
-    playerMoves = 0;
+    _playerMoves = 0;
+    _puzzleSolved = false;
   }
 
   Future<bool> initWithImage(
@@ -146,7 +149,8 @@ class Grid extends ChangeNotifier {
   }
 
   bool _canMoveGridItem(GridItem gridItemToMove) {
-    if (gridItemToMove.gridItemType == GridItemType.filledGridItem) {
+    if (gridItemToMove.gridItemType == GridItemType.filledGridItem &&
+        !_puzzleSolved) {
       GridItem emptyGridItem = gridItems[_emptyGridItemIdx];
 
       if (gridItemToMove.col == emptyGridItem.col) {
@@ -180,7 +184,8 @@ class Grid extends ChangeNotifier {
       item.reset();
     }
 
-    playerMoves = 0;
+    _playerMoves = 0;
+    _puzzleSolved = false;
   }
 
   void shuffleGrid() {
@@ -235,10 +240,10 @@ class Grid extends ChangeNotifier {
       gridItem.row = tempRow;
       gridItem.col = tempCol;
 
-      playerMoves += 1;
-    }
+      _playerMoves += 1;
 
-    notifyListeners();
+      _checkPuzzleState();
+    }
   }
 
   void clearGridMovements(GridItem gridItem) {
@@ -258,5 +263,31 @@ class Grid extends ChangeNotifier {
     for (GridItem item in gridItems) {
       clearGridMovements(item);
     }
+  }
+
+  int playerMoves() {
+    return _playerMoves;
+  }
+
+  void _checkPuzzleState() {
+    bool foundWrongPosition = false;
+
+    for (GridItem item in gridItems) {
+      if (!item.inCorrectPosition()) {
+        foundWrongPosition = true;
+
+        break;
+      }
+    }
+
+    if (!foundWrongPosition) {
+      _puzzleSolved = true;
+    }
+
+    notifyListeners();
+  }
+
+  bool isCompleted() {
+    return _puzzleSolved;
   }
 }

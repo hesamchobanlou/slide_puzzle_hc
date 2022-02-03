@@ -62,6 +62,14 @@ class GridItem {
     }
   }
 
+  bool inCorrectPosition() {
+    if (row == origRow && col == origCol) {
+      return true;
+    }
+
+    return false;
+  }
+
   @override
   String toString() {
     return 'type:$gridItemType row:$row, col:$col origRow:$origRow origCol:$origCol dx:$dx dy:$dy origDx:$origDx origDy:$origDy moveToDx:$moveToDx moveToDy:$moveToDy';
