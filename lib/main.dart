@@ -33,8 +33,8 @@ class SlidePuzzle extends StatefulWidget {
 
 class _SlidePuzzleState extends State<SlidePuzzle> {
   Grid myGrid = Grid(
-    rows: 4,
-    columns: 4,
+    rows: 3,
+    columns: 3,
     gridItemDim: 100, // size x size
     gridItemPadding: 5,
   );
